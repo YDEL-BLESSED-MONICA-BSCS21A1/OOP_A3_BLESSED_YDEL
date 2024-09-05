@@ -1,0 +1,135 @@
+using System;
+using System.Collections.Generic;
+
+public interface IInventory
+{
+    string Name { get; set; }
+    double Price { get; set; }
+}
+
+public class Coffee : IInventory
+{
+    public string Name { get; set; }
+    public double Price { get; set; }
+
+    public Coffee(string name, double price)
+    {
+        Name = name;
+        Price = price;
+    }
+}
+
+public class ShopInventory
+{
+    private List<Coffee> kohi = new List<Coffee>();
+    private List<Coffee> cart = new List<Coffee>();
+
+    public void AddKohi(string name, double price)
+    {
+        kohi.Add(new Coffee(name, price));
+        Console.WriteLine("\r\nItem added successfully!!\r\n");
+    }
+
+    public void View()
+    {
+        Console.WriteLine("\n------ Available Items: ------");
+        for (int i = 0; i < kohi.Count; i++)
+        {
+            Console.WriteLine($"{i + 1}. {kohi[i].Name} - ${kohi[i].Price:F2}");
+        }
+    }
+
+    public void AddToCart(int kohiIndex)
+    {
+        if (kohiIndex >= 0 && kohiIndex < kohi.Count)
+        {
+            cart.Add(kohi[kohiIndex]);
+            Console.WriteLine("\r\nItem added to order! ;)\r\n");
+        }
+        else
+        {
+            Console.WriteLine("\r\nInvalid item number. :(\r\n");
+        }
+    }
+
+    public void ViewCart()
+    {
+        Console.WriteLine("\nYour Cart:");
+        foreach (Coffee kohi in cart)
+        {
+            Console.WriteLine($"{kohi.Name} - ${kohi.Price:F2}");
+        }
+    }
+
+    public void CalculateTotal()
+    {
+        double total = 0;
+        foreach (Coffee kohi in cart)
+        {
+            total += kohi.Price;
+        }
+        Console.WriteLine($"\nTotal Amount Payable: ${total:F2}");
+    }
+}
+
+// Main Program
+public class Program
+{
+    static void Main(string[] args)
+    {
+        ShopInventory inventory = new ShopInventory();
+
+        while (true)
+        {
+            Console.WriteLine("\r\n>> ----- Welcome to the Coffee Shop!! ----- <<");
+            Console.WriteLine("\r\n1. Add Menu Item \r\n2. View Menu \r\n3. Place Order \r\n4. View Order \r\n5. Calculate Order \r\n6. Exit");
+
+            Console.Write("\r\nSelect an option: ");
+            int option = Convert.ToInt32(Console.ReadLine());
+
+            switch (option)
+            {
+                case 1:
+                    // Add Order
+                    Console.Write("Enter item name: ");
+                    string name = Console.ReadLine();
+                    Console.Write("Enter item price: ");
+                    double price = Convert.ToDouble(Console.ReadLine());
+                    inventory.AddKohi(name, price);
+                    break;
+
+                case 2:
+                    // View Order
+                    inventory.View();
+                    break;
+
+                case 3:
+                    // Add Order to Cart
+                    inventory.View();
+                    Console.Write("\r\nEnter the number to add to cart: ");
+                    int itemNumber = Convert.ToInt32(Console.ReadLine()) - 1;
+                    inventory.AddToCart(itemNumber);
+                    break;
+
+                case 4:
+                    // View Cart
+                    inventory.ViewCart();
+                    break;
+
+                case 5:
+                    // Calculate Total
+                    inventory.CalculateTotal();
+                    break;
+
+                case 6:
+                    // Exit
+                    Console.WriteLine("Thank you for visiting the Coffee Shop!");
+                    return;
+
+                default:
+                    Console.WriteLine("Invalid option. Please try again.");
+                    break;
+            }
+        }
+    }
+}
